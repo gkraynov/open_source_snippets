@@ -1,0 +1,50 @@
+<!doctype html>
+<!--
+Copyright 2017 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Protobuf Decoder Test</title>
+</head>
+<body>
+  <p>See JS console.</p>
+  <script type="text/javascript" src="protobuf_decoder.js"></script>
+  <script type="text/javascript">
+
+    const FooDescriptor = {
+      1: {name: 'id', type: ProtoFieldType.UINT},
+      2: {name: 'value', type: ProtoFieldType.SINT},
+      4: {name: 'comment', type: ProtoFieldType.STRING},
+      5: {name: 'scale', type: ProtoFieldType.FLOAT},
+    };
+
+    let m = new Uint8Array(17);
+    m[0] = 0x08;  // field 1
+    m[1] = 0x12;  // 18
+    m[2] = 0x10;  // field 2
+    m[3] = 0x95;  // -75
+    m[4] = 0x01;  // ...
+    m[5] = 0x22;  // field 4
+    m[6] = 0x03;  // length 3
+    m[7] = 0x42;  // 'B'
+    m[8] = 0x41;  // 'A'
+    m[9] = 0x52;  // 'R'
+    m[10] = 0x18;  // field 3
+    m[11] = 0x14;  // 20
+    m[12] = 0x2E;  // field 5
+    m[13] = 0x00;  // 2.5f
+    m[14] = 0x00;  // ...
+    m[15] = 0x20;  // ...
+    m[16] = 0x40;  // ...
+
+    let decoder = new ProtobufDecoder(m.buffer, 0);
+    let msg = decoder.readMessage(m.length, FooDescriptor);
+    console.log(msg);
+
+  </script>
+</body>
+</html>
